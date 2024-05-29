@@ -1,0 +1,43 @@
+/* Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Header Styles */
+h1 {
+    color: #007bff;
+    margin-top: 50px;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Container Styles */
+.container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+/* Form Styles */
+.form-control {
+    margin-bottom: 20px;
+}
+
+/* Footer Styles */
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #343a40;
+    color: #fff;
+}

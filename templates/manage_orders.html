@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Manage Orders
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Manage Orders</h1>
+    <!-- Add table to display orders -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Table Number</th>
+                <th>Items</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through orders data and display each order -->
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.table_number }}</td>
+                <td>{{ order.items }}</td>
+                <td>{{ order.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
