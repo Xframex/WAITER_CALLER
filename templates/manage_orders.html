@@ -5,50 +5,56 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center">Manage Orders</h1>
-    <p>Welcome to the order management section. Here you can keep track of customer orders and their status.</p>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Order List</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Table Number</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                        <tr>
-                            <td>{{ order.id }}</td>
-                            <td>{{ order.table_id }}</td>
-                            <td>{{ order.description }}</td>
-                            <td>{{ order.status }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <p>Here you can keep track of customer orders and their status.</p>
+
+    <h2>Order List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Table Number</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.table.table_number }}</td>
+                <td>{{ order.description }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    {% if order.status == 'Pending' %}
+                    <form action="{{ url_for('resolve_order', order_id=order.id) }}" method="post">
+                        <select name="status">
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Resolve</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Add New Order</h2>
+    <form method="POST" action="{{ url_for('manage_orders') }}">
+        <div class="form-group">
+            <label for="table_id">Table Number:</label>
+            <select class="form-control" id="table_id" name="table_id" required>
+                {% for table in tables %}
+                <option value="{{ table.id }}">{{ table.table_number }}</option>
+                {% endfor %}
+            </select>
         </div>
-        <div class="col-md-6">
-            <h2>Add New Order</h2>
-            <form method="POST" action="{{ url_for('manage_orders') }}">
-                <div class="form-group">
-                    <label for="table_id">Table Number:</label>
-                    <select class="form-control" id="table_id" name="table_id" required>
-                        {% for table in tables %}
-                            <option value="{{ table.id }}">{{ table.table_number }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <input type="text" class="form-control" id="description" name="description" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Order</button>
-            </form>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" name="description" required>
         </div>
-    </div>
+        <button type="submit" class="btn btn-primary">Add Order</button>
+    </form>
 </div>
 {% endblock %}
