@@ -95,7 +95,7 @@ def manage_tables():
     if request.method == 'POST':
         table_number = request.form['table_number']
         status = request.form['status']
-        description = request.form.get('description')  # Ensure description is fetched
+        description = request.form.get('description')  # handle description is fetched
         new_table = Table(table_number=table_number, status=status, description=description)
         db.session.add(new_table)
         db.session.commit()
