@@ -1,38 +1,49 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Tables</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Manage Tables</h1>
+        <form method="POST" action="{{ url_for('manage_tables') }}">
+            <div class="form-group">
+                <label for="table_number">Table Number:</label>
+                <input type="number" class="form-control" id="table_number" name="table_number" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select class="form-control" id="status" name="status" required>
+                    <option value="Available">Available</option>
+                    <option value="Occupied">Occupied</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Table</button>
+        </form>
 
-{% block title %}
-Manage Tables
-{% endblock %}
+        <hr>
 
-{% block content %}
-<div class="container">
-    <h1>Manage Tables</h1>
-    <!-- Table management content here -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Table Number</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>Occupied</td>
-                <td>
-                    <button class="btn btn-danger">Mark as Available</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Available</td>
-                <td>
-                    <button class="btn btn-success">Mark as Occupied</button>
-                </td>
-            </tr>
-            <!-- Add more table rows as needed -->
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+        <h2>Existing Tables</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Table Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for table in tables %}
+                    <tr>
+                        <td>{{ table.table_number }}</td>
+                        <td>{{ table.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

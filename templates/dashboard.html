@@ -1,12 +1,22 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Dashboard</h1>
 
-{% block title %}
-Dashboard
-{% endblock %}
+        <p>Welcome to your dashboard, {{ user.email }}!</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Dashboard</a>
+        <a href="{{ url_for('manage_tables') }}" class="btn btn-primary">Manage Tables</a>
+        <a href="{{ url_for('manage_orders') }}" class="btn btn-primary">Manage Orders</a>
 
-{% block content %}
-<div class="container">
-    <h1>Dashboard</h1>
-    <!-- Dashboard content goes here -->
-</div>
-{% endblock %}
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+</body>
+</html>
