@@ -10,7 +10,7 @@ def place_order():
         # Redirect to the dashboard or order confirmation page
         return redirect(url_for('orders.manage_orders'))  # Redirect to manage_orders page after placing order
     else:
-        # Render order form for patrons to place orders
+        # Render order form for patrons to place order
         return render_template('place_order.html')
 
 @orders_bp.route('/manage_orders')
