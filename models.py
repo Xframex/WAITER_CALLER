@@ -16,4 +16,7 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'), nullable=False)
     description = db.Column(db.String(200), nullable=False)
-    status = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), nullable=False, default='Pending')
+    table = db.relationship('Table', backref='orders')
+
+

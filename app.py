@@ -122,8 +122,11 @@ def manage_orders():
         return redirect(url_for('manage_orders'))
     
     orders = Order.query.all()
+    for order in orders:
+        order.table = Table.query.get(order.table_id)  # Fetch the associated table for each order
     tables = Table.query.all()
     return render_template('manage_orders.html', orders=orders, tables=tables)
+
 
 @app.route('/logout')
 def logout():
