@@ -15,7 +15,8 @@
                     <tr>
                         <th>Table Number</th>
                         <th>Status</th>
-                        <th>Description</th> <!-- New column for description -->
+                        <th>Description</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,11 +24,20 @@
                         <tr>
                             <td>{{ table.table_number }}</td>
                             <td>{{ table.status }}</td>
-                            <td>{{ table.description }}</td> <!-- Display description -->
+                            <td>{{ table.description }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('delete_table', table_id=table.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                                <a href="{{ url_for('edit_table', table_id=table.id) }}" class="btn btn-warning">Edit</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <form method="POST" action="{{ url_for('clear_tables') }}" onsubmit="return confirm('Are you sure you want to delete all tables?');">
+                <button type="submit" class="btn btn-danger mt-3">Clear All Tables</button>
+            </form>
         </div>
         <div class="col-md-6">
             <h2>Add New Table</h2>

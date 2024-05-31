@@ -8,6 +8,20 @@
     <p>Here you can keep track of customer orders and their status.</p>
 
     <h2>Order List</h2>
+    <form method="GET" action="{{ url_for('manage_orders') }}">
+        <div class="form-group">
+            <label for="filter_status">Filter by Status:</label>
+            <select class="form-control" id="filter_status" name="filter_status">
+                <option value="">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+        </div>
+    </form>
+
     <table class="table">
         <thead>
             <tr>
@@ -26,14 +40,14 @@
                 <td>{{ order.description }}</td>
                 <td>{{ order.status }}</td>
                 <td>
-                    {% if order.status == 'Pending' %}
-                    <form action="{{ url_for('resolve_order', order_id=order.id) }}" method="post">
+                    <form action="{{ url_for('resolve_order', order_id=order.id) }}" method="post" style="display: inline;">
                         <select name="status">
                             <option value="Completed">Completed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
-                        <button type="submit" class="btn btn-primary">Resolve</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </form>
-                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

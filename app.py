@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate  # Import Flask-Migrate
 from models import User, Table, Order
+#from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '_secret_key'
@@ -11,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)  # Initialize Flask-Migrate
 bcrypt = Bcrypt(app)
+#csrf = CSRFProtect(app)
 
 users_bp = Blueprint('users', __name__)
 
@@ -91,34 +93,86 @@ def register():
 @app.route('/manage_tables', methods=['GET', 'POST'])
 def manage_tables():
     if 'user_id' not in session:
+        flash('Please log in to manage tables.', 'error')
         return redirect(url_for('login'))
     if request.method == 'POST':
         table_number = request.form['table_number']
         status = request.form['status']
-        description = request.form.get('description')  # handle description is fetched
+        description = request.form.get('description')
         new_table = Table(table_number=table_number, status=status, description=description)
         db.session.add(new_table)
         db.session.commit()
+        flash('Table added successfully.', 'success')
         return redirect(url_for('manage_tables'))
     tables = Table.query.all()
     return render_template('manage_tables.html', tables=tables)
 
+@app.route('/delete_table/<int:table_id>', methods=['POST'])
+def delete_table(table_id):
+    table = Table.query.get_or_404(table_id)
+    db.session.delete(table)
+    db.session.commit()
+    flash('Table deleted successfully.', 'success')
+    return redirect(url_for('manage_tables'))
+
+
+
+
+@app.route('/edit_table/<int:table_id>', methods=['GET', 'POST'])
+def edit_table(table_id):
+    table = Table.query.get_or_404(table_id)
+    if request.method == 'POST':
+        table.table_number = request.form['table_number']
+        table.status = request.form['status']
+        table.description = request.form.get('description')
+        db.session.commit()
+        flash('Table updated successfully.', 'success')
+        return redirect(url_for('manage_tables'))
+    return render_template('edit_table.html', table=table)
+
 @app.route('/manage_orders', methods=['GET', 'POST'])
 def manage_orders():
     if 'user_id' not in session:
+        flash('Please log in to manage orders.', 'error')
         return redirect(url_for('login'))
-    
+
     if request.method == 'POST':
         table_id = request.form['table_id']
         description = request.form['description']
-        new_order = Order(table_id=table_id, description=description)
+        new_order = Order(table_id=table_id, description=description, status='Pending')
         db.session.add(new_order)
         db.session.commit()
+        flash('Order added successfully.', 'success')
         return redirect(url_for('manage_orders'))
-    
-    orders = Order.query.all()
+
+    filter_status = request.args.get('filter_status')
+    if filter_status:
+        orders = Order.query.filter_by(status=filter_status).all()
+    else:
+        orders = Order.query.all()
+
     tables = Table.query.all()
     return render_template('manage_orders.html', orders=orders, tables=tables)
+
+@app.route('/clear_tables', methods=['POST'])
+def clear_tables():
+    if 'user_id' not in session:
+        flash('Please log in to perform this action.', 'error')
+        return redirect(url_for('login'))
+    
+    # Check if there are any existing orders associated with tables
+    existing_orders = Order.query.filter(Order.table_id.isnot(None)).count()
+    if existing_orders > 0:
+        flash('Cannot clear tables with existing orders', 'error')
+    else:
+        Table.query.delete()  # This deletes all rows from the Table model
+        db.session.commit()
+        flash('All tables deleted successfully.', 'success')
+    
+    return redirect(url_for('manage_tables'))
+
+
+
 
 @app.route('/resolve_order/<int:order_id>', methods=['POST'])
 def resolve_order(order_id):
