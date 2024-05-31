@@ -110,10 +110,14 @@ def manage_tables():
 @app.route('/delete_table/<int:table_id>', methods=['POST'])
 def delete_table(table_id):
     table = Table.query.get_or_404(table_id)
+    # Update associated orders to set table_id to null
+    Order.query.filter_by(table_id=table_id).update({'table_id': None})
     db.session.delete(table)
     db.session.commit()
     flash('Table deleted successfully.', 'success')
     return redirect(url_for('manage_tables'))
+
+
 
 
 
@@ -161,13 +165,15 @@ def clear_tables():
         return redirect(url_for('login'))
     
     # Check if there are any existing orders associated with tables
-    existing_orders = Order.query.filter(Order.table_id.isnot(None)).count()
+    existing_orders = Order.query.count()
     if existing_orders > 0:
-        flash('Cannot clear tables with existing orders', 'error')
+        flash('Cannot clear tables with existing orders. Please resolve or delete all orders first.', 'error')
     else:
-        Table.query.delete()  # This deletes all rows from the Table model
-        db.session.commit()
-        flash('All tables deleted successfully.', 'success')
+        # Drop all tables from the database
+        db.drop_all()
+        # Recreate all tables
+        db.create_all()
+        flash('All tables cleared successfully.', 'success')
     
     return redirect(url_for('manage_tables'))
 
